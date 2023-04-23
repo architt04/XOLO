@@ -12,6 +12,7 @@ import os
 import time
 import requests
 import json
+import sys
 
 from bs4 import BeautifulSoup
 from datetime import date
@@ -19,6 +20,85 @@ from urllib.request import urlopen
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
 engine.setProperty('voice',voices[0].id)
+
+from PySide import QtCore,QtGui
+from PySide import QtUiTools
+import os, sys
+from kicad_board import KicadBoard
+
+def load_ui(file_name, where=None):
+    """
+    Loads a .UI file into the corresponding Qt Python object
+    :param file_name: UI file path
+    :param where: Use this parameter to load the UI into an existing class (i.e. to override methods)
+    :return: loaded UI
+    """
+    # Create a QtLoader
+    loader = QtUiTools.QUiLoader()
+
+    # Open the UI file
+    ui_file = QtCore.QFile(file_name)
+    ui_file.open(QtCore.QFile.ReadOnly)
+
+    # Load the contents of the file
+    ui = loader.load(ui_file, where)
+
+    # Close the file
+    ui_file.close()
+
+    return ui
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_XoloUi(object):
+    def setupUi(self, XoloUi):
+        XoloUi.setObjectName("XoloUi")
+        XoloUi.resize(1366, 720)
+        self.centralwidget = QtWidgets.QWidget(XoloUi)
+        self.centralwidget.setObjectName("centralwidget")
+        self.bg_1 = QtWidgets.QLabel(self.centralwidget)
+        self.bg_1.setGeometry(QtCore.QRect(-70, -20, 1531, 841))
+        self.bg_1.setText("")
+        self.bg_1.setPixmap(QtGui.QPixmap("../GUI/bg/vecteezy_abstract-blue-circuit-digital-background_6736873.jpg"))
+        self.bg_1.setScaledContents(True)
+        self.bg_1.setObjectName("bg_1")
+        self.bg_2 = QtWidgets.QLabel(self.centralwidget)
+        self.bg_2.setGeometry(QtCore.QRect(610, 240, 111, 101))
+        self.bg_2.setText("")
+        self.bg_2.setPixmap(QtGui.QPixmap("../GUI/bg/Screenshot_20230423_000708_Microsoft 365 (Office) (2).png"))
+        self.bg_2.setScaledContents(True)
+        self.bg_2.setObjectName("bg_2")
+        self.pushButton_1 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_1.setGeometry(QtCore.QRect(510, 410, 111, 41))
+        self.pushButton_1.setStyleSheet("font: 75 14pt \"MS Shell Dlg 2\";\n"
+"background-color: rgb(226, 226, 218);")
+        self.pushButton_1.setObjectName("pushButton_1")
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(710, 410, 111, 41))
+        self.pushButton_2.setStyleSheet("font: 75 14pt \"MS Shell Dlg 2\";\n"
+"background-color: rgb(226, 226, 218);")
+        self.pushButton_2.setObjectName("pushButton_2")
+        XoloUi.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(XoloUi)
+        QtCore.QMetaObject.connectSlotsByName(XoloUi)
+
+    def retranslateUi(self, XoloUi):
+        _translate = QtCore.QCoreApplication.translate
+        XoloUi.setWindowTitle(_translate("XoloUi", "MainWindow"))
+        self.pushButton_1.setText(_translate("XoloUi", "START"))
+        self.pushButton_2.setText(_translate("XoloUi", "EXIT"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    XoloUi = QtWidgets.QMainWindow()
+    ui = Ui_XoloUi()
+    ui.setupUi(XoloUi)
+    XoloUi.show()
+    sys.exit(app.exec_())
 
 def speak(audio):
     engine.say(audio)
@@ -131,7 +211,7 @@ if __name__ == "__main__":
             temp = data.find("div",class_="BNeawe").text
             speak(f"Current {search} is {temp}")
 
-        elif "WEATHER" in qry :
+        elif "Weather" in qry :
             city_name = input("Enter the name of the City : ")
             def Gen_report(C):
                 url = 'https://wttr.in/{}'.format(C)
